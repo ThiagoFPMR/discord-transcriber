@@ -3,14 +3,17 @@ import os
 import shutil
 import subprocess
 from google import genai
-from utils import load_credential
+from utils import load_config
 from datetime import datetime
 
 
 class AudioParser:
     def __init__(self):
-        self.client = genai.Client(api_key=load_credential("gemini_api_key"))  
-        self.vault_path = load_credential("vault_path")  
+        self.config = load_config("config.yaml")
+        self.vault_path = self.config["vault_path"]
+
+        if self.config["options"]["ai_used"] == "gemini":
+            self.client = genai.Client(api_key=self.config["genai"]["gemini"]["api_key"])
 
     def summarize_daily_log(self, file_path):
         """
